@@ -1,20 +1,65 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { SectionHeading } from "./SectionHeading";
-import { Send, Mail, MapPin, Phone, Sparkles } from "lucide-react";
+import emailjs from "@emailjs/browser";
+import { Send, Mail, MapPin, Phone, Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
 
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [status, setStatus] = React.useState<"success" | "error" | null>(null);
+  const [formData, setFormData] = React.useState({
+    name: "",
+    email: "",
+    message: "",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+    if (status) setStatus(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
+    setStatus(null);
+
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "";
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "";
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "";
+
+    if (!serviceId || !templateId || !publicKey || serviceId === "your_service_id") {
+      console.error("EmailJS credentials are not set in .env.local");
+      // Fallback for demo purposes if keys aren't set yet
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setStatus("error");
+      }, 1000);
+      return;
+    }
+
+    try {
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: formData.name,
+          reply_to: formData.email,
+          message: formData.message,
+        },
+        publicKey
+      );
+
       setIsSubmitting(false);
-      alert("Message sent successfully!");
-    }, 1500);
+      setStatus("success");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+      setIsSubmitting(false);
+      setStatus("error");
+    }
   };
 
   const contactInfo = [
@@ -135,6 +180,8 @@ export function Contact() {
                       required
                       maxLength={50}
                       placeholder="Your Name"
+                      value={formData.name}
+                      onChange={handleChange}
                       className="w-full p-3 rounded-[18px] border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-0 focus:border-primary focus:outline-none transition-all duration-500 placeholder:text-gray-400 dark:placeholder:text-muted-foreground/20 font-bold text-gray-900 dark:text-white"
                     />
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-primary group-focus-within/input:w-1/2 transition-all duration-700 rounded-full" />
@@ -149,6 +196,8 @@ export function Contact() {
                       required
                       maxLength={100}
                       placeholder="your.email@example.com"
+                      value={formData.email}
+                      onChange={handleChange}
                       className="w-full p-3 rounded-[18px] border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-0 focus:border-primary focus:outline-none transition-all duration-500 placeholder:text-gray-400 dark:placeholder:text-muted-foreground/20 font-bold text-gray-900 dark:text-white"
                     />
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-primary group-focus-within/input:w-1/2 transition-all duration-700 rounded-full" />
@@ -165,6 +214,8 @@ export function Contact() {
                     required
                     maxLength={800}
                     placeholder="Describe your vision..."
+                    value={formData.message}
+                    onChange={handleChange}
                     className="w-full p-3 rounded-[18px] border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-0 focus:border-primary focus:outline-none transition-all duration-500 resize-none placeholder:text-gray-400 dark:placeholder:text-muted-foreground/20 font-bold text-gray-900 dark:text-white"
                   />
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-primary group-focus-within/input:w-1/2 transition-all duration-700 rounded-full" />
@@ -184,6 +235,31 @@ export function Contact() {
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:animate-shine" />
               </motion.button>
+
+              <AnimatePresence>
+                {status === "success" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex items-center gap-3 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-sm"
+                  >
+                    <CheckCircle2 size={18} />
+                    <span>Message sent successfully! I'll get back to you soon.</span>
+                  </motion.div>
+                )}
+                {status === "error" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex items-center gap-3 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 font-bold text-sm"
+                  >
+                    <AlertCircle size={18} />
+                    <span>Oops! Something went wrong. Please try again or email me directly.</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </form>
           </motion.div>
         </div>

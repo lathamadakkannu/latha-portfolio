@@ -31,22 +31,7 @@ const projects = [
     tags: ["Next.js", "React", "Redux Toolkit", "Sass"],
     liveUrl: "https://education-platform-six-brown.vercel.app/",
   },
-  {
-    id: 4,
-    title: "Portfolio Website",
-    description: "A modern, responsive portfolio website built with smooth animations and interactive components.",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop",
-    tags: ["ReactJs", "NextJs", "Framer Motion"],
-    liveUrl: "#",
-  },
-  {
-    id: 5,
-    title: "Educational Portal",
-    description: "Responsive web application designed to manage student activities and course content effectively.",
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop",
-    tags: ["HTML5", "CSS3", "ReactJs"],
-    liveUrl: "#",
-  },
+
 ];
 
 const containerVariants = {
