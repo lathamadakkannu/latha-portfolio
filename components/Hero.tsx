@@ -131,7 +131,7 @@ export function Hero() {
               <ArrowRight size={24} className="group-hover:translate-x-1.5 transition-transform" />
             </Link>
             <a
-              href="/resume.pdf"
+              href="/Latha_Resume.pdf"
               download="Latha_Resume.pdf"
               className="group flex items-center gap-3 px-6 py-3 bg-white/5 backdrop-blur-2xl text-foreground rounded-2xl font-black text-lg hover:bg-white/10 transition-all duration-500 border border-white/10 shadow-xl active:scale-95"
             >
