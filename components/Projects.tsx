@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { SectionHeading } from "./SectionHeading";
-import { ExternalLink, Code } from "lucide-react";
+import { ExternalLink, Code  } from "lucide-react";
 import Link from "next/link";
 
 const projects = [
@@ -14,14 +14,16 @@ const projects = [
     image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=400&fit=crop",
     tags: ["HTML5", "CSS3", "JavaScript"],
     liveUrl: "https://lathamadakkannu.github.io/swiggy/",
+    githubUrl: null,
   },
   {
     id: 2,
     title: "Rehoboth Infrastructure",
     description: "A professional construction & development company website showcasing family house developments, commercial buildings, sports centers, and office towers with a modern UI design.",
-    image: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&h=400&fit=crop", // Consider replacing with a screenshot of your actual site
+    image: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&h=400&fit=crop",
     tags: ["HTML5", "CSS3", "UI Design"],
     liveUrl: "https://lathamadakkannu.github.io/Rehoboth-Infrastructure/index.html",
+    githubUrl: null,
   },
   {
     id: 3,
@@ -30,8 +32,17 @@ const projects = [
     image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop",
     tags: ["Next.js", "React", "Redux Toolkit", "Sass"],
     liveUrl: "https://education-platform-six-brown.vercel.app/",
+    githubUrl: null,
   },
-
+  {
+    id: 4,
+    title: "Hospital Mobile App",
+    description: "A comprehensive hospital management mobile application built with React Native Expo and TypeScript. Features include appointment booking, prescription management, doctor listings with specialties, patient records, and real-time notifications. Provides seamless healthcare access on both iOS and Android platforms.",
+    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop",
+    tags: ["React Native", "Expo", "TypeScript", "Mobile App"],
+    liveUrl: null,
+    githubUrl: "https://github.com/lathamadakkannu/hospital-app-expo",
+  },
 ];
 
 const containerVariants = {
@@ -57,10 +68,12 @@ const itemVariants = {
 };
 
 export function Projects() {
-  // Function to handle card click (navigate to live URL)
-  const handleCardClick = (liveUrl: string) => {
+  // Function to handle card click (navigate to live URL if available, otherwise GitHub URL)
+  const handleCardClick = (liveUrl: string | null, githubUrl: string | null) => {
     if (liveUrl && liveUrl !== "#") {
       window.open(liveUrl, "_blank");
+    } else if (githubUrl && githubUrl !== "#") {
+      window.open(githubUrl, "_blank");
     }
   };
 
@@ -88,7 +101,7 @@ export function Projects() {
                 transition: { duration: 0.4 }
               }}
               className="bg-white/5 dark:bg-black/5 backdrop-blur-3xl group rounded-[2.5rem] overflow-hidden border border-white/10 dark:border-white/5 shadow-2xl hover:shadow-primary/30 hover:border-primary/20 transition-all duration-500 cursor-pointer"
-              onClick={() => handleCardClick(project.liveUrl)}
+              onClick={() => handleCardClick(project.liveUrl, project.githubUrl)}
             >
               <div className="relative overflow-hidden aspect-video">
                 <img
@@ -97,7 +110,7 @@ export function Projects() {
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-125 group-hover:rotate-2"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center gap-6">
-                  {project.liveUrl !== "#" && (
+                  {project.liveUrl && project.liveUrl !== "#" && (
                     <Link
                       href={project.liveUrl}
                       target="_blank"
@@ -108,7 +121,17 @@ export function Projects() {
                       <ExternalLink size={24} />
                     </Link>
                   )}
-                 
+                  {project.githubUrl && project.githubUrl !== "#" && (
+                    <Link
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-4 bg-white text-black rounded-full hover:scale-110 transition-transform duration-300 shadow-xl"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Code  size={24} />
+                    </Link>
+                  )}
                 </div>
               </div>
 
